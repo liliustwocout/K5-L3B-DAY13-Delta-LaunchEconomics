@@ -205,12 +205,66 @@ def in_nhiem_vu_b(runs, reqs, goc_a2):
     print(f'Trung bình phut_lam_lai_simulated trong phạm vi: {phut_lam_lai_tb_data:.2f}; toàn bộ: {phut_lam_lai_tb_all:.2f}')
 
 
+from statistics import NormalDist
+
+
+def co_mau(p1, p2, alpha=0.05, power=0.8):
+    """Tính cỡ mẫu mỗi nhóm khi so sánh hai tỉ lệ độc lập (z-test hai phía)."""
+    za = NormalDist().inv_cdf(1 - alpha / 2)
+    zb = NormalDist().inv_cdf(power)
+    pb = (p1 + p2) / 2
+    tu_so = (za * math.sqrt(2 * pb * (1 - pb)) + zb * math.sqrt(p1 * (1 - p1) + p2 * (1 - p2))) ** 2
+    mau_so = (p2 - p1) ** 2
+    return math.ceil(tu_so / mau_so)
+
+
+def in_nhiem_vu_d(reqs):
+    """In kết quả tính cỡ mẫu và kiểm tra điều kiện Nhiệm vụ D (D1)."""
+    print('\n=== D1 · Cỡ mẫu và hệ số thiết kế ===')
+    baseline = 0.70
+    alpha = 0.05
+    power = 0.80
+    icc = 0.02
+
+    # a) Chia theo yêu cầu (+5 điểm)
+    n_a = co_mau(baseline, baseline + 0.05, alpha=alpha, power=power)
+    print(f'a) Chia theo yêu cầu (MDE=0.05): {n_a} yêu cầu mỗi nhóm')
+
+    # b) Theo nhân viên, m = 75
+    m_b = 75
+    de_b = 1 + (m_b - 1) * icc
+    n_b = math.ceil(n_a * de_b)
+    nv_b = math.ceil(n_b / m_b)
+    print(f'b) Theo nhân viên, m=75: DE={de_b:.2f} -> {n_b} YC/nhóm ({nv_b} NV/nhóm, tổng {nv_b * 2} > 40: KHÔNG ĐỦ)')
+
+    # c) 20 nhân viên mỗi nhóm
+    n_eff_max_c = 20 / icc
+    print(f'c) 20 nhân viên mỗi nhóm: tối đa c/ICC = {n_eff_max_c:.0f} hiệu dụng (< {n_a} cho MDE 0.05: KHÔNG ĐẠT)')
+
+    # d) 6 depot mỗi nhóm
+    n_eff_max_d = 6 / icc
+    print(f'd) 6 depot mỗi nhóm: tối đa c/ICC = {n_eff_max_d:.0f} hiệu dụng (quá ít cụm: KHÔNG ĐẠT)')
+
+    # e) Mức chênh 6 điểm, 20 nhân viên mỗi nhóm
+    mde_e = 0.06
+    n_e = co_mau(baseline, baseline + mde_e, alpha=alpha, power=power)
+    m_req_e = (0.98 * n_e) / (20 - icc * n_e)
+    m_e = math.ceil(m_req_e)
+    de_e = 1 + (m_e - 1) * icc
+    print(
+        f'e) Mức chênh 6 điểm ({n_e}/nhóm), 20 NV/nhóm: m >= {m_e} YC/NV (DE={de_e:.2f}) -> ĐẠT VỚI MDE 6 ĐIỂM'
+    )
+
+    ti_le_mo_lai = float(reqs['mo_lai_trong_7_ngay'].mean()) * 100
+    pv = reqs[reqs['loai'].isin(['noi_dia', 'hang_nang'])]
+    ti_le_mo_lai_pv = float(pv['mo_lai_trong_7_ngay'].mean()) * 100
+    print(f'\nTỉ lệ mo_lai_trong_7_ngay hiện tại: toàn bộ {ti_le_mo_lai:.2f}%, phạm vi noi_dia+hang_nang {ti_le_mo_lai_pv:.2f}%')
+
+
 if __name__ == '__main__':
     runs = pd.read_csv('logix_runs.csv')
     reqs = pd.read_csv('logix_requests.csv', keep_default_na=False)
     kiem_tra_dap_an_biet_truoc()
     ket_qua_a2 = in_nhiem_vu_a(runs, reqs)
     in_nhiem_vu_b(runs, reqs, ket_qua_a2)
-    # TODO CP4 · Nhiệm vụ D: cỡ mẫu.
-    #   from statsmodels.stats.proportion import proportion_effectsize
-    #   from statsmodels.stats.power import NormalIndPower
+    in_nhiem_vu_d(reqs)
