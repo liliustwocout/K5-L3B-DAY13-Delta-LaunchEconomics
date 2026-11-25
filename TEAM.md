@@ -58,16 +58,18 @@ Sao chép mục dưới đây cho từng thành viên.
 
 ### Phần việc phụ trách
 
-- **Người gắn nhãn 1** (CP3) & **bổ sung code kiểm chứng trên máy thứ 2** (CP4–E1): gắn nhãn độc lập 20 ca lỗi ở CP3 (`report/team/bang_loi.md`); hoàn thiện bảng E1, 10 event có `trace_id` và kiểm tra chéo (`report/team/chi_so.md`); bổ sung kiểm chứng `statsmodels` và tính thử 3 chỉ số E1 trong `src/lab13.py`.
+- **Người gắn nhãn 1** (CP1–CP3) & **Người viết code đổi vai trên máy thứ 2** (CP4–E1): theo dõi điều kiện "Xong khi", gắn nhãn độc lập 20 ca lỗi ở CP3 (`report/team/bang_loi.md`); hoàn thiện bảng E1, 10 event có `trace_id` và kiểm tra chéo (`report/team/chi_so.md`); chạy `src/lab13.py` trên máy thứ hai, bổ sung kiểm chứng `statsmodels` (`power` ở `MDE 0,06`) và tính thử 3 chỉ số E1.
 
 ### Đóng góp cụ thể
 
-- Gắn nhãn độc lập 20 ca lỗi (nhãn người 1) trong `report/team/bang_loi.md` trước khi so nhãn với người gắn nhãn 2 (đạt đồng thuận `19/20 = 95%`).
+- Thiết lập `.venv` và chạy kiểm chứng lại toàn bộ `src/lab13.py` trên máy thứ hai (đạt `Ba phép thử đáp án biết trước: ĐẠT` và toàn bộ bảng A, B, D, E1).
+- Gắn nhãn độc lập 20 ca lỗi (cột `Nhãn người 1`) trong `report/team/bang_loi.md` trước khi so nhãn với người gắn nhãn 2 và gộp bảng đồng thuận `19/20 = 95%`.
 - Hoàn thiện E1 (3 chỉ số tính thử + 1 chỉ số dùng & 1 chỉ số an toàn tự đề xuất), danh sách 10 event có `trace_id` và mục kiểm tra chéo từng chỉ số trong `report/team/chi_so.md`.
-- Chạy `src/lab13.py` trên máy thứ hai, bổ sung đối chiếu `statsmodels` (`NormalIndPower`, `power = 0,6417` ở `n = 859` với mức chênh 5 điểm) và hàm `in_nhiem_vu_e1(reqs)` (`82,83%`, `27,12%`, `4,25%` / `3,97%`).
+- Bổ sung đối chiếu `statsmodels` (`NormalIndPower`, `power = 0,6417` ở `n = 859` với mức chênh 5 điểm) và hàm `in_nhiem_vu_e1(reqs)` (`82,83%`, `27,12%`, `4,25%` / `3,97%`) trong `src/lab13.py`.
 
 ### Bằng chứng
 
+- Báo cáo cá nhân chi tiết: `report/team/2A202604071_TranDucDuy.md`.
 - Commits: `7d5b52a` (nhãn độc lập người 1), `ed39e7d` (merge `bang_loi.md`), `31f07a6` (`report/team/chi_so.md` E1 + 10 events + kiểm tra chéo), `d746294` & `ff76670` (`src/lab13.py` kiểm chứng `statsmodels` & E1).
 
 ## BuiPhuocAnh-2A202604102
