@@ -4,7 +4,10 @@ Không cần khoá API. Điền các chỗ ghi VIẾT Ở ĐÂY (đánh dấu TO
 Bản gốc chưa sửa nằm ở lab13_starter.py.
 """
 import math
+from statistics import NormalDist
 import pandas as pd
+from statsmodels.stats.proportion import proportion_effectsize
+from statsmodels.stats.power import NormalIndPower
 
 # Bảng giá GIẢ ĐỊNH của lab (không phải giá thật của nhà cung cấp nào)
 GIA_VAO = 26        # đồng cho 1.000 token đầu vào
@@ -205,9 +208,6 @@ def in_nhiem_vu_b(runs, reqs, goc_a2):
     print(f'Trung bình phut_lam_lai_simulated trong phạm vi: {phut_lam_lai_tb_data:.2f}; toàn bộ: {phut_lam_lai_tb_all:.2f}')
 
 
-from statistics import NormalDist
-
-
 def co_mau(p1, p2, alpha=0.05, power=0.8):
     """Tính cỡ mẫu mỗi nhóm khi so sánh hai tỉ lệ độc lập (z-test hai phía)."""
     za = NormalDist().inv_cdf(1 - alpha / 2)
@@ -219,7 +219,7 @@ def co_mau(p1, p2, alpha=0.05, power=0.8):
 
 
 def in_nhiem_vu_d(reqs):
-    """In kết quả tính cỡ mẫu và kiểm tra điều kiện Nhiệm vụ D (D1)."""
+    """In kết quả tính cỡ mẫu, power thực tế và kiểm tra điều kiện Nhiệm vụ D (D1, D3)."""
     print('\n=== D1 · Cỡ mẫu và hệ số thiết kế ===')
     baseline = 0.70
     alpha = 0.05
@@ -255,10 +255,51 @@ def in_nhiem_vu_d(reqs):
         f'e) Mức chênh 6 điểm ({n_e}/nhóm), 20 NV/nhóm: m >= {m_e} YC/NV (DE={de_e:.2f}) -> ĐẠT VỚI MDE 6 ĐIỂM'
     )
 
+    power_solver = NormalIndPower()
+    n_sm_5 = math.ceil(power_solver.solve_power(
+        effect_size=proportion_effectsize(baseline + 0.05, baseline), power=power, alpha=alpha
+    ))
+    n_sm_6 = math.ceil(power_solver.solve_power(
+        effect_size=proportion_effectsize(baseline + mde_e, baseline), power=power, alpha=alpha
+    ))
+    power_thuc_te_5pt = float(power_solver.power(
+        effect_size=proportion_effectsize(baseline + 0.05, baseline), nobs1=n_e, alpha=alpha
+    ))
+    print(
+        f'   Đối chiếu statsmodels: MDE 0.05 -> {n_sm_5}/nhóm; MDE 0.06 -> {n_sm_6}/nhóm; '
+        f'power ở n={n_e} nếu tác động thật chỉ 0.05: {power_thuc_te_5pt:.2f} ({power_thuc_te_5pt:.4f})'
+    )
+
     ti_le_mo_lai = float(reqs['mo_lai_trong_7_ngay'].mean()) * 100
     pv = reqs[reqs['loai'].isin(['noi_dia', 'hang_nang'])]
     ti_le_mo_lai_pv = float(pv['mo_lai_trong_7_ngay'].mean()) * 100
-    print(f'\nTỉ lệ mo_lai_trong_7_ngay hiện tại: toàn bộ {ti_le_mo_lai:.2f}%, phạm vi noi_dia+hang_nang {ti_le_mo_lai_pv:.2f}%')
+    print(
+        f'\nTỉ lệ mo_lai_trong_7_ngay hiện tại: toàn bộ {ti_le_mo_lai:.2f}%, '
+        f'phạm vi noi_dia+hang_nang {ti_le_mo_lai_pv:.2f}%'
+    )
+
+
+def in_nhiem_vu_e1(reqs):
+    """Tính thử ba chỉ số đầu của Nhiệm vụ E1 trên 1.200 yêu cầu."""
+    print('\n=== E1 · Tính thử ba chỉ số chính, dùng, an toàn ===')
+    chinh_mask = (reqs['dong_trong_24h'] == 1) & (reqs['mo_lai_trong_7_ngay'] == 0)
+    chinh_num = int(chinh_mask.sum())
+    tong_yc = len(reqs)
+
+    xem = reqs[reqs['duoc_xem_lai'] == 1]
+    bo_qua_num = int(xem['quyet_dinh_xem_lai'].isin(['sua', 'bo']).sum())
+    xem_den = len(xem)
+
+    an_toan_num = int((reqs['mo_lai_trong_7_ngay'] == 1).sum())
+    pv = reqs[reqs['loai'].isin(['noi_dia', 'hang_nang'])]
+    an_toan_pv_num = int((pv['mo_lai_trong_7_ngay'] == 1).sum())
+
+    print(f'Chỉ số chính (đóng 24h, không mở lại 7 ngày): {chinh_num}/{tong_yc} = {chinh_num / tong_yc * 100:.2f}%')
+    print(f'Chỉ số dùng (tỉ lệ bỏ qua gợi ý sua+bo):      {bo_qua_num}/{xem_den} = {bo_qua_num / xem_den * 100:.2f}%')
+    print(
+        f'Chỉ số an toàn (mở lại trong 7 ngày):         {an_toan_num}/{tong_yc} = {an_toan_num / tong_yc * 100:.2f}% '
+        f'(phạm vi noi_dia+hang_nang: {an_toan_pv_num}/{len(pv)} = {an_toan_pv_num / len(pv) * 100:.2f}%)'
+    )
 
 
 if __name__ == '__main__':
@@ -268,3 +309,4 @@ if __name__ == '__main__':
     ket_qua_a2 = in_nhiem_vu_a(runs, reqs)
     in_nhiem_vu_b(runs, reqs, ket_qua_a2)
     in_nhiem_vu_d(reqs)
+    in_nhiem_vu_e1(reqs)
