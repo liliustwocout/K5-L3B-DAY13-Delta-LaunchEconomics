@@ -87,8 +87,12 @@ Sao chép mục dưới đây cho từng thành viên.
 
 ### Đóng góp cụ thể
 
-- *(Cập nhật sau khi hoàn thành các checkpoint)*
+- Tính tay kiểm tra độc lập 3 phép thử A1, đối chiếu các số liệu từ trace A2 (CPS 4.472 đ `simulated`, gấp 16,3× hoá đơn; làm lại 51,8%), A3 (loại `quoc_te` và `doi_tac`), A4 (chi phí cố định 4.599 đ).
+- Kiểm tra 9 kịch bản độ nhạy B1, kịch bản đôi B2 (+46,3%), chi phí hệ thống B3 (giới hạn 2 lần rẻ nhất: 6.901.220 đ) và điểm hòa vốn xem lại 100% B4 (≤ 4,8–5,1 phút).
+- Kiểm tra cỡ mẫu D1 (1.251 YC/nhóm; 20 NV/nhóm MDE 6 điểm cần m ≥ 299 YC/người, power 0,64); hoàn thiện bảng E2 Rủi ro kinh tế trong `chi_so.md`; rà soát toàn bộ nhãn `simulated` và cam kết không dùng từ "production".
 
 ### Bằng chứng
 
-- *(Cập nhật commit, kết quả đối chiếu và file bảng chi phí)*
+- Báo cáo cá nhân chi tiết: `report/team/2A202604100_LeBaNguyen.md`.
+- Commit `80afbc3` (cập nhật rủi ro kinh tế E2 và các mục chi phí vào hồ sơ launch v0) và commit `553d283` (hoàn thành `pilot_plan.yaml` và code tính cỡ mẫu D1 trong `lab13.py`).
+- Kết quả chạy `src/lab13.py` trên môi trường cá nhân đạt 100% kết quả kiểm thử.
