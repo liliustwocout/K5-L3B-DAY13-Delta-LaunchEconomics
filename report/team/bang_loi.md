@@ -43,8 +43,8 @@ Cách phát hiện phải đo được (event, ngưỡng, tần suất). Ngườ
 
 | Ca | Loại lỗi | Phát hiện bằng gì | Khắc phục thế nào | Ai phụ trách |
 | --: | --- | --- | --- | --- |
-| ... | Do người dùng | ... | ... | ... |
-| ... | Hệ thống | ... | ... | ... |
-| ... | Ngữ cảnh | ... | ... | ... |
-| ... | Giới hạn hệ thống | ... | ... | ... |
-| ... | Ngầm | ... | ... | ... |
+| 1 | Do người dùng | Ngân hàng trả lỗi "số tài khoản không hợp lệ"; log tool hoàn tiền ghi nhận lệnh bị từ chối; cảnh báo khi tỉ lệ lệnh hoàn bị ngân hàng từ chối vượt 2% mỗi ngày | Kiểm tra định dạng và độ dài số tài khoản ngay lúc nhập; đọc lại tên chủ tài khoản để khách xác nhận trước khi tạo lệnh hoàn | Team sản phẩm (UX form nhập) |
+| 7 | Hệ thống | Đối soát giữa log API (503, không có bản ghi hoàn) và tin nhắn "đã hoàn tiền thành công" gửi khách; khách khiếu nại vì chưa nhận tiền; đối soát hằng giờ, cảnh báo khi có ≥ 1 tin "thành công" mà không có mã giao dịch | Chỉ báo thành công khi API trả 2xx và có mã giao dịch; sau 3 lần thử lỗi thì báo "đang xử lý", đưa vào hàng đợi và chuyển nhân viên; thêm test cho nhánh lỗi API | Kỹ sư backend |
+| 3 | Ngữ cảnh | Khách báo "chưa được hoàn"; theo dõi tỉ lệ ticket có nội dung "chưa nhận tiền" trong khi giao dịch vào ví đã thành công; cảnh báo khi ticket "chưa nhận tiền" chiếm hơn 5% số đơn đã hoàn vào ví trong tuần | Tin nhắn hoàn tiền nêu rõ "đã hoàn vào ví LogiX" kèm hướng dẫn kiểm tra hoặc rút về ngân hàng; cho khách chọn nơi nhận tiền hoàn | Product owner |
+| 11 | Giới hạn hệ thống | Log loại đầu vào: tin nhắn thoại bị trả lời "vui lòng nhập bằng chữ"; đếm số khách rời đi sau phản hồi đó; đếm số tin nhắn thoại mỗi tuần, ưu tiên làm speech-to-text khi vượt 3% số yêu cầu | Trước mắt: chuyển tin nhắn thoại cho nhân viên hoặc gửi kèm nút gõ nhanh các yêu cầu phổ biến. Lâu dài: thêm speech-to-text | Product owner |
+| 17 | Ngầm | Đối soát định kỳ phí đã tính so với bảng giá đang hiệu lực; cảnh báo khi phiên bản bảng giá trong tool khác với bản mới nhất; chạy đối soát mỗi ngày, cảnh báo khi phiên bản bảng giá lệch ≥ 1 ngày hoặc ≥ 10 đơn bị tính sai | Gắn phiên bản và ngày hiệu lực cho bảng giá, tool từ chối dùng bảng hết hạn; tính lại 212 đơn và hoàn phần chênh; thêm job đối soát hằng ngày | Data/ops engineer |
