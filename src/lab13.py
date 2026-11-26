@@ -4,6 +4,7 @@ Không cần khoá API. Điền các chỗ ghi VIẾT Ở ĐÂY (đánh dấu TO
 Bản gốc chưa sửa nằm ở lab13_starter.py.
 """
 import math
+import sys
 from statistics import NormalDist
 import pandas as pd
 from statsmodels.stats.proportion import proportion_effectsize
@@ -303,6 +304,9 @@ def in_nhiem_vu_e1(reqs):
 
 
 if __name__ == '__main__':
+    # Windows dùng cp1252 mặc định, in chữ tiếng Việt sẽ lỗi nếu không ép UTF-8.
+    if hasattr(sys.stdout, 'reconfigure'):
+        sys.stdout.reconfigure(encoding='utf-8')
     runs = pd.read_csv('logix_runs.csv')
     reqs = pd.read_csv('logix_requests.csv', keep_default_na=False)
     kiem_tra_dap_an_biet_truoc()

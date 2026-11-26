@@ -27,7 +27,7 @@
 - **Nhiệm vụ D (CP4) & E (CP5):**
   - Kiểm tra chéo 5 con số cỡ mẫu D1 ($1.251$ YC/nhóm; nhân viên $m=75$ cần 84 người; tối đa hiệu dụng 20 nhân viên là $1.000$; MDE 6 điểm cần $m \ge 299$ YC/người, power ở mức 5 điểm là $0,64$).
   - Soạn thảo và hoàn thiện bảng **E2 · Rủi ro kinh tế** trong `report/team/chi_so.md` gồm 3 rủi ro kinh tế lớn rút ra từ bảng độ nhạy.
-  - Rà soát toàn bộ các file hồ sơ để bảo đảm quy tắc: mọi con số từ cột giả lập đều có nhãn `simulated`, mỗi câu trả lời $\le 3$ dòng và có số, tuyệt đối không dùng từ "production".
+  - Rà soát toàn bộ các file hồ sơ để bảo đảm quy tắc: mọi con số từ cột giả lập đều có nhãn `simulated`, mỗi câu trả lời $\le 3$ dòng và có số, không dùng thuật ngữ bị cấm trong quy tắc lab.
 
 ## 4. Bằng chứng
 
@@ -45,7 +45,7 @@
 - **Công cụ:** Trợ lý AI (Antigravity / Claude / Gemini).
 - **Mục đích sử dụng:**
   - Tra cứu công thức giải phương trình tìm cỡ cụm $m$ khi biết cỡ mẫu hiệu dụng và ICC trong Cluster Randomized Trial.
-  - Soát lỗi cú pháp YAML và soát lỗi định dạng checklist (kiểm tra không còn từ "production", kiểm tra nhãn `simulated`).
+  - Soát lỗi cú pháp YAML và soát lỗi định dạng checklist (kiểm tra không còn thuật ngữ bị cấm, kiểm tra nhãn `simulated`).
 - **Cách tự kiểm tra:** Tự tay bấm máy tính giải phương trình và tính lại các phép nhân chia trên dữ liệu mẫu trước khi điền vào báo cáo; chạy trực tiếp script Python kiểm tra YAML và hàm thống kê để đối chiếu kết quả.
 
 ## 6. Tự đánh giá
